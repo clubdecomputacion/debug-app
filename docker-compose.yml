@@ -1,0 +1,30 @@
+services:
+
+  debug-app:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      - TITLE=Entorno de Desarrollo
+      - MICROSERVICE=debug-tool
+      - ENVIRONMENT=development
+      - DB_HOST=mysql-server
+      - DB_USER=debug_user
+      - DB_PASSWORD=debug_pass
+    depends_on:
+      - mysql-server
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  mysql-server:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpass
+      - MYSQL_DATABASE=debug_db
+      - MYSQL_USER=debug_user
+      - MYSQL_PASSWORD=debug_pass
+    ports:
+      - "3306:3306"
