@@ -27,7 +27,6 @@ Una aplicación Flask diseñada específicamente para diagnosticar y depurar pro
 ```
 debug-app/
 ├── Dockerfile            # Definición del contenedor
-├── Dockerfile.minimal    # Versión simplificada
 ├── README.md             # este archivo
 ├── app.py                # Aplicación Flask principal
 ├── build.sh              # Script de construcción
@@ -48,7 +47,7 @@ git clone https://github.com/clubdecomputacion/debug-app.git
 cd debug-app
 
 # Construir y ejecutar
-docker-compose up --build
+docker compose up --build
 ```
 
 La aplicación estará disponible en: http://localhost:8080
@@ -149,7 +148,7 @@ docker run -p 8080:80 -v $(pwd):/app debug-app
 
 ```bash
 # Entorno completo con MySQL
-docker compose -f docker-compose.yml up
+docker compose up
 
 # Solo la aplicación
 docker compose up debug-app

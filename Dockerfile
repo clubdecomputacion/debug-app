@@ -1,4 +1,3 @@
-# Utiliza una imagen base oficial de Python
 # versión específica para reproducibilidad
 FROM python:3.12-slim
 
@@ -8,18 +7,18 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1
 
 # Instala dependencias del sistema necesarias
-RUN apt-get update && apt-get install -y \
-    # Dependencias para compilación (por si algún paquete Python lo requiere)
-    gcc \
-    # Dependencias para conectividad de red y diagnóstico
-    net-tools \
-    iputils-ping \
-    curl \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+RUN apt-get update && \
+    apt-get install -y \
+        # Dependencias para compilación (paquetes de Python)
+        gcc \
+        # Dependencias para conectividad de red y diagnóstico
+        net-tools iputils-ping curl && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get clean
 
 # Crea un usuario no-root para mayor seguridad
-RUN groupadd -r appuser && useradd -r -g appuser appuser
+RUN groupadd -r appuser && \
+    useradd -r -g appuser appuser
 
 # Crea el directorio de la aplicación y establece permisos
 WORKDIR /app
@@ -29,10 +28,10 @@ COPY requirements.txt .
 
 # Instala dependencias de Python optimizando para tamaño y seguridad
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir --user -r requirements.txt
+    pip install --no-cache-dir -r requirements.txt
 
 # Añade el directorio de instalación de pip al PATH
-ENV PATH="/root/.local/bin:${PATH}"
+# ENV PATH="~/.local/bin:${PATH}"
 
 # Copia el código de la aplicación
 COPY app.py .
@@ -59,6 +58,6 @@ ENV FLASK_ENV=production \
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:80/health || exit 1
 
-# Comando para ejecutar la aplicación usando el módulo flask para mejor manejo
-CMD ["python", "-m", "flask", "run", "--host=0.0.0.0", "--port=80"]
+# Comando para ejecutar la aplicación 
+CMD ["python", "app.py"]
 

@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+from flask import __version__ as flask_version
 import os
 import mysql.connector
 from datetime import datetime
@@ -39,7 +40,7 @@ def get_system_info():
         'python_version': sys.version,
         'platform': platform.platform(),
         'working_directory': os.getcwd(),
-        'flask_version': Flask.__version__
+        'flask_version': flask_version
     }
 
 @app.route('/')
